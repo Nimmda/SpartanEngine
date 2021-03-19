@@ -24,7 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //= INCLUDES =====================
 #include <chrono>
 #include <memory>
-#include "..\RHI\RHI_Definition.h"
+#include "../RHI/RHI_Definition.h"
 //================================
 
 namespace Spartan
@@ -56,7 +56,7 @@ namespace Spartan
         float GetDuration()             const { return m_duration; }
         bool IsComplete()               const { return m_is_complete; }
 
-    private:    
+    private:
         static uint32_t FindTreeDepth(const TimeBlock* time_block, uint32_t depth = 0);
         static uint32_t m_max_tree_depth;
 
@@ -71,7 +71,7 @@ namespace Spartan
         // CPU timing
         std::chrono::steady_clock::time_point m_start;
         std::chrono::steady_clock::time_point m_end;
-    
+
         // GPU timing
         void* m_query_disjoint      = nullptr;
         void* m_query_start         = nullptr;

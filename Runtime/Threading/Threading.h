@@ -28,6 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <deque>
 #include <unordered_map>
 #include <functional>
+#include <condition_variable>
 #include "../Logging/Log.h"
 #include "../Core/ISubsystem.h"
 //=============================

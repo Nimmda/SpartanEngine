@@ -26,7 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //= NAMESPACES =====
 using namespace std;
 //==================
-
+#define sprintf_s(buf, ...) snprintf((buf), sizeof(buf), __VA_ARGS__)
 namespace Spartan::Math
 {
     const Matrix Matrix::Identity

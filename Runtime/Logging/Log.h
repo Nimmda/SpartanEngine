@@ -27,13 +27,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <mutex>
 #include <vector>
 #include "../Core/Spartan_Definitions.h"
+#include "ILogger.h"
 //======================================
 
 namespace Spartan
 {
+#ifdef __linux__
+    #define LOG_INFO(text, ...)        { Spartan::Log::WriteFInfo(std::string(__FUNCTION__)    + ": " + std::string(text), ##__VA_ARGS__); }
+    #define LOG_WARNING(text, ...)    { Spartan::Log::WriteFWarning(std::string(__FUNCTION__) + ": " + std::string(text), ##__VA_ARGS__); }
+    #define LOG_ERROR(text, ...)    { Spartan::Log::WriteFError(std::string(__FUNCTION__)   + ": " + std::string(text), ##__VA_ARGS__); }
+#elif _WIN32 || _WIN64
     #define LOG_INFO(text, ...)        { Spartan::Log::WriteFInfo(std::string(__FUNCTION__)    + ": " + std::string(text), __VA_ARGS__); }
     #define LOG_WARNING(text, ...)    { Spartan::Log::WriteFWarning(std::string(__FUNCTION__) + ": " + std::string(text), __VA_ARGS__); }
     #define LOG_ERROR(text, ...)    { Spartan::Log::WriteFError(std::string(__FUNCTION__)   + ": " + std::string(text), __VA_ARGS__); }
+#endif
+
+
 
     // Standard errors
     #define LOG_ERROR_GENERIC_FAILURE()        LOG_ERROR("Failed.")
@@ -100,7 +109,7 @@ namespace Spartan
             std::is_same<T, unsigned>::value ||
             std::is_same<T, unsigned long>::value ||
             std::is_same<T, unsigned long long>::value ||
-            std::is_same<T, float>::value || 
+            std::is_same<T, float>::value ||
             std::is_same<T, double>::value ||
             std::is_same<T, long double>::value
         >::type>
@@ -123,7 +132,7 @@ namespace Spartan
         static void Write(const std::weak_ptr<Entity>& entity, LogType type);
         static void Write(const std::shared_ptr<Entity>& entity, LogType type);
 
-        static bool m_log_to_file;     
+        static bool m_log_to_file;
 
     private:
         static void FlushBuffer();
@@ -132,7 +141,7 @@ namespace Spartan
 
         static std::mutex m_mutex_log;
         static std::weak_ptr<ILogger> m_logger;
-        static std::ofstream m_fout;    
+        static std::ofstream m_fout;
         static std::string m_log_file_name;
         static bool m_first_log;
         static std::vector<LogCmd> m_log_buffer;

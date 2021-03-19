@@ -126,4 +126,6 @@ SP_WARNINGS_ON
 #include "../Math/Frustum.h"
 #include "../Math/Plane.h"
 #include "../Math/MathHelper.h"
+// Linux helper
+#define sprintf_s(buf, ...) snprintf((buf), sizeof(buf), __VA_ARGS__)
 //==============================

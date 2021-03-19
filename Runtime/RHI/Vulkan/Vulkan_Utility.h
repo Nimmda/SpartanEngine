@@ -22,6 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #pragma once
 
 //= INCLUDES ========================
+#include <thread>
 #include "../RHI_Implementation.h"
 #include "../RHI_Device.h"
 #include "../RHI_Texture.h"
@@ -252,21 +253,21 @@ namespace Spartan::vulkan_utility
             timeline_info.pNext         = nullptr;
             timeline_info.semaphoreType = VK_SEMAPHORE_TYPE_TIMELINE;
             timeline_info.initialValue  = intial_value;
-        
+
             VkSemaphoreCreateInfo semaphore_info = {};
             semaphore_info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
             semaphore_info.pNext = &timeline_info;
             semaphore_info.flags = 0;
-        
+
             VkSemaphore* semaphore_vk = reinterpret_cast<VkSemaphore*>(&semaphore);
             return error::check(vkCreateSemaphore(globals::rhi_context->device, &semaphore_info, nullptr, semaphore_vk));
         }
-        
+
         inline void destroy(void*& semaphore)
         {
             if (!semaphore)
                 return;
-        
+
             VkSemaphore semaphore_vk = static_cast<VkSemaphore>(semaphore);
             vkDestroySemaphore(globals::rhi_context->device, semaphore_vk, nullptr);
             semaphore = nullptr;
@@ -1082,7 +1083,7 @@ namespace Spartan::vulkan_utility
             get_func(get_physical_device_memory_properties_2, vkGetPhysicalDeviceMemoryProperties2);
 
             if (globals::rhi_context->debug)
-            { 
+            {
                 /* VK_EXT_debug_utils */
                 get_func(create_messenger,  vkCreateDebugUtilsMessengerEXT);
                 get_func(destroy_messenger, vkDestroyDebugUtilsMessengerEXT);

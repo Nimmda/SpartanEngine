@@ -22,7 +22,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //= INCLUDES =======
 #include "Spartan.h"
 #include "Display.h"
+
+#ifdef __linux__
+#include <GLFW/glfw3.h>
+#elif _WIN32 || _WIN64
 #include <windows.h>
+#endif
 //==================
 
 namespace Spartan
@@ -57,7 +62,7 @@ namespace Spartan
             {
                 // But not lower hz
                 if (display_mode.hz >= m_display_mode_active.hz)
-                { 
+                {
                     m_display_mode_active.width         = display_mode.width;
                     m_display_mode_active.height        = display_mode.height;
                     m_display_mode_active.hz            = display_mode.hz;
@@ -71,6 +76,35 @@ namespace Spartan
         context->GetSubsystem<Timer>()->SetTargetFps(m_display_modes.front().hz);
     }
 
+#ifdef __linux__
+  uint32_t Display::GetWidth()
+    {
+        GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
+        const GLFWvidmode* mode = glfwGetVideoMode(primaryMonitor);
+        return static_cast<uint32_t>(mode->width);
+    }
+
+    uint32_t Display::GetHeight()
+    {
+        GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
+        const GLFWvidmode* mode = glfwGetVideoMode(primaryMonitor);
+        return static_cast<uint32_t>(mode->height);
+    }
+
+    uint32_t Display::GetWidthVirtual()
+    {
+        GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
+        const GLFWvidmode* mode = glfwGetVideoMode(primaryMonitor);
+        return static_cast<uint32_t>(mode->width);
+    }
+
+    uint32_t Display::GetHeightVirtual()
+    {
+        GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
+        const GLFWvidmode* mode = glfwGetVideoMode(primaryMonitor);
+        return static_cast<uint32_t>(mode->height);
+    }
+#elif _WIN32 || _WIN64
     uint32_t Display::GetWidth()
     {
         return static_cast<uint32_t>(GetSystemMetrics(SM_CXSCREEN));
@@ -90,4 +124,6 @@ namespace Spartan
     {
         return static_cast<uint32_t>(GetSystemMetrics(SM_CYVIRTUALSCREEN));
     }
+#endif
+
 }

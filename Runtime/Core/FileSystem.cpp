@@ -23,8 +23,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "Spartan.h"
 #include <filesystem>
 #include <regex>
+#ifdef __linux__
+#include <unistd.h>
+#elif _WIN32 || _WIN64
 #include <windows.h>
 #include <shellapi.h>
+#endif
 //===================
 
 //= NAMESPACES =====
@@ -155,13 +159,23 @@ namespace Spartan
 
     wstring FileSystem::StringToWstring(const string& str)
     {
+#ifdef __linux__
         const auto slength = static_cast<int>(str.length()) + 1;
+        const auto len = mbtowc(0, str.c_str(), slength);
+        const auto buf = new wchar_t[len];
+        mbtowc(0, str.c_str(), slength);
+        std::wstring result(buf);
+        delete[] buf;
+        return result;
+#elif _WIN32 || _WIN64
+          const auto slength = static_cast<int>(str.length()) + 1;
         const auto len = MultiByteToWideChar(CP_ACP, 0, str.c_str(), slength, nullptr, 0);
         const auto buf = new wchar_t[len];
         MultiByteToWideChar(CP_ACP, 0, str.c_str(), slength, buf, len);
         std::wstring result(buf);
         delete[] buf;
         return result;
+#endif
     }
 
     void FileSystem::GetIncludedFilePathsFromFilePath(const string& file_path, vector<string>& file_paths)
@@ -228,7 +242,11 @@ namespace Spartan
 
     void FileSystem::OpenDirectoryWindow(const string& directory)
     {
+#ifdef __linux__
+        execv(directory.c_str(), nullptr);
+#elif _WIN32 || _WIN64
         ShellExecute(nullptr, nullptr, StringToWstring(directory).c_str(), nullptr, nullptr, SW_SHOW);
+#endif
     }
 
     bool FileSystem::CreateDirectory_(const string& path)
@@ -320,7 +338,7 @@ namespace Spartan
             CreateDirectory_(GetDirectoryFromFilePath(destination));
         }
 
-        try 
+        try
         {
             return filesystem::copy_file(source, destination, filesystem::copy_options::overwrite_existing);
         }
@@ -380,7 +398,7 @@ namespace Spartan
         catch (system_error & e)
         {
             LOG_WARNING("Failed. %s", e.what());
-            
+
         }
 
         return extension;
@@ -479,7 +497,7 @@ namespace Spartan
             if (extension == format || extension == ConvertToUppercase(format))
                 return true;
         }
-        
+
         if (GetExtensionFromFilePath(path) == EXTENSION_TEXTURE)
             return true;
 
@@ -716,17 +734,17 @@ namespace Spartan
         // find out where the two paths diverge
         filesystem::path::const_iterator itr_path = p.begin();
         filesystem::path::const_iterator itr_relative_to = r.begin();
-        while( *itr_path == *itr_relative_to && itr_path != p.end() && itr_relative_to != r.end() ) 
+        while( *itr_path == *itr_relative_to && itr_path != p.end() && itr_relative_to != r.end() )
         {
             ++itr_path;
             ++itr_relative_to;
         }
 
         // add "../" for each remaining token in relative_to
-        if( itr_relative_to != r.end() ) 
+        if( itr_relative_to != r.end() )
         {
             ++itr_relative_to;
-            while( itr_relative_to != r.end() ) 
+            while( itr_relative_to != r.end() )
             {
                 result /= "..";
                 ++itr_relative_to;
@@ -734,7 +752,7 @@ namespace Spartan
         }
 
         // add remaining path
-        while( itr_path != p.end() ) 
+        while( itr_path != p.end() )
         {
             result /= *itr_path;
             ++itr_path;

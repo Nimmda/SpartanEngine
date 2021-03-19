@@ -23,6 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "Spartan.h"
 #include "FileStream.h"
 #include "../RHI/RHI_Vertex.h"
+#include "../Logging/Log.h"
 //============================
 
 //= NAMESPACES =====
@@ -36,10 +37,20 @@ namespace Spartan
         m_is_open    = false;
         m_flags        = flags;
 
+#ifdef __linux__
+        int int_flags    = ios::binary;
+        int_flags        |= (flags & FileStream_Read)    ? ios::in    : 0;
+        int_flags        |= (flags & FileStream_Write)    ? ios::out    : 0;
+        int_flags        |= (flags & FileStream_Append)    ? ios::app    : 0;
+
+        auto ios_flags = static_cast<ios_base::openmode>(int_flags);
+
+#elif _WIN32 || _WIN64
         int ios_flags    = ios::binary;
         ios_flags        |= (flags & FileStream_Read)    ? ios::in    : 0;
         ios_flags        |= (flags & FileStream_Write)    ? ios::out    : 0;
         ios_flags        |= (flags & FileStream_Append)    ? ios::app    : 0;
+#endif
 
         if (m_flags & FileStream_Write)
         {

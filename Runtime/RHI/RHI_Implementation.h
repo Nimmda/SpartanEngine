@@ -155,9 +155,14 @@ static const D3D11_BLEND_OP d3d11_blend_operation[] =
 #endif
 
 // Definition - Vulkan
-#if defined(API_GRAPHICS_VULKAN) 
+#if defined(API_GRAPHICS_VULKAN)
 #pragma comment(lib, "vulkan-1.lib")
+#ifdef __linux__
+#define VK_USE_PLATFORM_WAYLAND_KHR
+#elif _WIN32 || _WIN64
 #define VK_USE_PLATFORM_WIN32_KHR
+#endif
+
 #pragma warning(push, 0) // Hide warnings which belong to Vulkan
 #include <vulkan/vulkan.h>
 #pragma warning(pop)
@@ -170,7 +175,7 @@ static const VkPolygonMode vulkan_polygon_mode[] =
 };
 
 static const VkCullModeFlags vulkan_cull_mode[] =
-{    
+{
     VK_CULL_MODE_NONE,
     VK_CULL_MODE_FRONT_BIT,
     VK_CULL_MODE_BACK_BIT,
@@ -367,7 +372,7 @@ namespace Spartan
                 std::vector<VkValidationFeatureEnableEXT> validation_extensions = { };
                 std::vector<const char*> extensions_instance                    = { "VK_KHR_surface", "VK_KHR_win32_surface" };
             #endif
-                
+
                 bool initalise_allocator();
                 void destroy_allocator();
         #endif
