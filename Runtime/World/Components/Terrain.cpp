@@ -23,14 +23,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "Spartan.h"
 #include "Terrain.h"
 #include "Renderable.h"
-#include "..\Entity.h"
-#include "..\..\RHI\RHI_Texture2D.h"
-#include "..\..\RHI\RHI_Vertex.h"
-#include "..\..\Rendering\Model.h"
-#include "..\..\IO\FileStream.h"
-#include "..\..\Resource\ResourceCache.h"
-#include "..\..\Rendering\Mesh.h"
-#include "..\..\Threading\Threading.h"
+#include "../Entity.h"
+#include "../../RHI/RHI_Texture2D.h"
+#include "../../RHI/RHI_Vertex.h"
+#include "../../Rendering/Model.h"
+#include "../../IO/FileStream.h"
+#include "../../Resource/ResourceCache.h"
+#include "../../Rendering/Mesh.h"
+#include "../../Threading/Threading.h"
 //=======================================
 
 //= NAMESPACES ===============
@@ -42,12 +42,12 @@ namespace Spartan
 {
     Terrain::Terrain(Context* context, Entity* entity, uint32_t id /*= 0*/) : IComponent(context, entity, id)
     {
-        
+
     }
 
     void Terrain::OnInitialize()
     {
-        
+
     }
 
     void Terrain::Serialize(FileStream* stream)
@@ -95,7 +95,7 @@ namespace Spartan
             {
                 renderable->GeometryClear();
             }
-            
+
             return;
         }
 
@@ -321,7 +321,7 @@ namespace Spartan
             }
         }
 
-        
+
         // Compute vertex normals and tangents (normals averaging) - This is very expensive show we split it into multiple threads below
         const auto compute_vertex_normals_tangents = [this, &face_normals , &face_tangents, &vertices, &indices, &vertex_count, &face_count](uint32_t i_start, uint32_t i_end)
         {

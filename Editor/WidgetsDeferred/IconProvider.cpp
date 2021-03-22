@@ -22,7 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //= INCLUDES ==================
 #include "IconProvider.h"
 #include "../ImGui_Extension.h"
-#include "Rendering\Model.h"
+#include "Rendering/Model.h"
 //=============================
 
 //= NAMESPACES ==========
@@ -51,7 +51,7 @@ void IconProvider::Initialize(Context* context)
     Thumbnail_Load(data_dir + "Icons/component_componentOptions.png",       Icon_Component_Options);
     Thumbnail_Load(data_dir + "Icons/component_audioListener.png",          Icon_Component_AudioListener);
     Thumbnail_Load(data_dir + "Icons/component_audioSource.png",            Icon_Component_AudioSource);
-    Thumbnail_Load(data_dir + "Icons/component_camera.png",                 Icon_Component_Camera); 
+    Thumbnail_Load(data_dir + "Icons/component_camera.png",                 Icon_Component_Camera);
     Thumbnail_Load(data_dir + "Icons/component_collider.png",               Icon_Component_Collider);
     Thumbnail_Load(data_dir + "Icons/component_light.png",                  Icon_Component_Light);
     Thumbnail_Load(data_dir + "Icons/component_material.png",               Icon_Component_Material);
@@ -124,7 +124,7 @@ const Thumbnail& IconProvider::Thumbnail_Load(const string& file_path, Icon_Type
         }
     }
     else // Check if we already have this thumbnail (by path)
-    {        
+    {
         for (auto& thumbnail : m_thumbnails)
         {
             if (thumbnail.filePath == file_path)

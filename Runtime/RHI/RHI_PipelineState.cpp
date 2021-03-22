@@ -29,7 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "RHI_InputLayout.h"
 #include "RHI_RasterizerState.h"
 #include "RHI_DepthStencilState.h"
-#include "..\Utilities\Hash.h"
+#include "../Utilities/Hash.h"
 //================================
 
 //= NAMESPACES =====
@@ -261,12 +261,12 @@ namespace Spartan
                 render_target_color_layout_final     = layout;
             }
         }
-        
+
         // Depth
         if (RHI_Texture* texture = render_target_depth_texture)
         {
             RHI_Image_Layout layout = render_target_depth_texture_read_only ? RHI_Image_Layout::Depth_Stencil_Read_Only_Optimal :  RHI_Image_Layout::Depth_Stencil_Attachment_Optimal;
-        
+
             texture->SetLayout(layout, cmd_list);
             render_target_depth_layout_initial   = layout;
             render_target_depth_layout_final     = layout;
