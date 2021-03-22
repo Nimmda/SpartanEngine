@@ -83,10 +83,10 @@ namespace Spartan
         }
 
         // Position and rotation dirty check
-        if (m_previous_pos != GetTransform()->GetPosition() || m_previous_rot != GetTransform()->GetRotation())
+        if (m_previous_pos != m_transform->GetPosition() || m_previous_rot != m_transform->GetRotation())
         {
-            m_previous_pos = GetTransform()->GetPosition();
-            m_previous_rot = GetTransform()->GetRotation();
+            m_previous_pos = m_transform->GetPosition();
+            m_previous_rot = m_transform->GetRotation();
 
             m_is_dirty = true;
         }
@@ -106,6 +106,13 @@ namespace Spartan
 
         if (!m_is_dirty)
             return;
+
+        // Update position based on direction (for directional light)
+        if (m_light_type == LightType::Directional)
+        {
+            float distance = m_renderer->GetCamera() ? m_renderer->GetCamera()->GetFarPlane() : 1000.0f;
+            m_transform->SetPosition(-m_transform->GetForward() * distance);
+        }
 
         // Update shadow map(s)
         if (m_shadows_enabled)
@@ -226,11 +233,6 @@ namespace Spartan
         m_time_of_day = Helper::Clamp(time_of_day, 0.0f, 24.0f);
     }
 
-    Vector3 Light::GetDirection() const
-    {
-        return GetTransform()->GetForward();
-    }
-
     void Light::ComputeViewMatrix()
     {
         if (m_light_type == LightType::Directional)
@@ -240,7 +242,7 @@ namespace Spartan
                 for (uint32_t i = 0; i < m_cascade_count; i++)
                 {
                     ShadowSlice& shadow_map = m_shadow_map.slices[i];
-                    Vector3 position        = shadow_map.center - GetDirection() * shadow_map.max.z;
+                    Vector3 position        = shadow_map.center - m_transform->GetForward() * shadow_map.max.z;
                     Vector3 target          = shadow_map.center;
                     Vector3 up              = Vector3::Up;
                     m_matrix_view[i]        = Matrix::CreateLookAtLH(position, target, up);
@@ -249,9 +251,9 @@ namespace Spartan
         }
         else if (m_light_type == LightType::Spot)
         {   
-            const Vector3 position  = GetTransform()->GetPosition();
-            const Vector3 forward   = GetTransform()->GetForward();
-            const Vector3 up        = GetTransform()->GetUp();
+            const Vector3 position  = m_transform->GetPosition();
+            const Vector3 forward   = m_transform->GetForward();
+            const Vector3 up        = m_transform->GetUp();
 
             // Compute
             m_matrix_view[0] = Matrix::CreateLookAtLH(position, position + forward, up);
